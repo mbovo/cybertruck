@@ -1,0 +1,1 @@
+{{ currentChart.customValues | to_nice_yaml }}

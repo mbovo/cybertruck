@@ -1,0 +1,9 @@
+
+- name: "Ensuring proxy containers are destroyed"
+  shell: docker ps | grep ingress-kind-proxy | awk '{ print $1}' | xargs docker rm -f
+
+- name: "Destroy cluster "
+  shell: kind delete cluster --name {{ cluster.name }}
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"
+

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+BASEDIR=$(dirname $0)
+TAGS=""
+DEBUG=0
+STAGE=""
+SKIPCHECK=0
+DOMAIN="cluster.domain"
+CONFIGFILE="$(cd $BASEDIR && pwd)/config.yml"
+
+export ANSIBLE_PYTHON_INTERPRETER=${BASEDIR}/.venv/bin/python
+source ${BASEDIR}/scripts/setup.sh
+
+if [ -z "$KUBECONFIG" ]; then
+  export KUBECONFIG="$HOME/.kube/config"
+fi
+
+function main(){
+  if [ $DEBUG -eq 0 ]; then 
+    #export ANSIBLE_STDOUT_CALLBACK="unixy"
+    DBG_FLAG=""
+  else
+    DBG_FLAG="-vvv"
+  fi
+  if [ ! -r ${BASEDIR}/ansible/playbooks/$STAGE.yml ]; then 
+    echo "${RED}ERR: Invalid stage name${OFF}"
+    echo "Use -s [stageName] and choose among available stages:"
+    STS=$(ls ${BASEDIR}/ansible/playbooks/ | xargs basename -s .yml)
+    for i in $STS;do
+      echo "- $i"
+    done
+    exit 1
+  fi
+
+  echo "+ Executing stage [$STAGE]..."
+
+  export ANSIBLE_ROLES_PATH=${BASEDIR}/ansible/roles
+  export ANSIBLE_NOCOWS=1
+  ansible-playbook $DBG_FLAG -i ${BASEDIR}/ansible/inventory ${BASEDIR}/ansible/main.yml -e "stage=$STAGE configFile=$CONFIGFILE" $TAGS
+
+}
+
+while getopts "s:d:c:t:FDh" opt; do
+  case ${opt} in
+    s)
+      STAGE="$OPTARG"
+      ;;
+    d)
+      DOMAIN="$OPTARG"
+      ;;
+    c)
+      CONFIGFILE="$OPTARG"
+      ;;
+    t)
+      TAGS="-t $OPTARG"
+      ;;
+    D)
+      DEBUG=1
+      ;;
+    F)
+      SKIPCHECK=1
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    \?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [ $SKIPCHECK -lt 1 ]; then
+  preflight
+fi
+main
+deactivate

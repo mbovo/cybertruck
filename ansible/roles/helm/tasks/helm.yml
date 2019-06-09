@@ -1,0 +1,22 @@
+---
+
+- debug:
+    msg: "Parsing {{ currentChart.releaseName|default('') }}"
+
+- include_tasks: syntax_check.yml
+
+
+- name: "Load values.yml from file {{ currentChart.customValues }}"
+  copy:
+    src: "{{ currentChart.customValues }}"
+    dest: "/tmp/helmchart-{{ currentChart.releaseName }}-values.yml"
+  when: currentChart.customValues is string
+
+- name: "Create values.yml file from template"
+  template:
+    src: values.yml.tpl
+    dest: "/tmp/helmchart-{{ currentChart.releaseName }}-values.yml"
+  when: currentChart.customValues is mapping
+
+- name: "Install/Upgrade {{ currentChart.releaseName }}"
+  shell: "helm upgrade {{ currentChart.releaseName }} {{ currentChart.chart }} -i --wait --repo '{{ currentChart.repo }}' --namespace '{{ currentChart.namespace }}' --version '{{ currentChart.version|string }}' -f '/tmp/helmchart-{{ currentChart.releaseName }}-values.yml'{%if 'extraOptions' in currentChart and currentChart.extraOptions != '' %} {{ currentChart.extraOptions }}{% endif %}"

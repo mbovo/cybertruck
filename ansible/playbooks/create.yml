@@ -1,0 +1,6 @@
+---
+
+- name: "Going to {{cluster.type}}"
+  include_tasks: "{{playbook_dir}}/../{{cluster.type}}/setup.yml"
+  tags:
+    - always

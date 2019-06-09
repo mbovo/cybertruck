@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monitoring
+  namespace: {{currentAddon.namespace}}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  tls:
+  - hosts:
+    - grafana.{{kubernetes.globals.domain_name}}
+    - prometheus.{{kubernetes.globals.domain_name}}
+    secretName: api.kubepv.tk
+  rules:  
+  - host: grafana.{{kubernetes.globals.domain_name}}
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 80
+  - host: prometheus.{{kubernetes.globals.domain_name}}
+    http:
+      paths:
+      - backend:
+          serviceName: prometheus-server
+          servicePort: 80

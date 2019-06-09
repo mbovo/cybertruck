@@ -1,0 +1,29 @@
+#!/bin/bash
+
+- name: "Apply configuration"
+  template:
+    src: "{{playbook_dir}}/../{{cluster.type}}/vars.tfvars.j2"
+    dest: "{{playbook_dir}}/../{{cluster.type}}/vars.tfvars"
+
+- name: "Terraform init"
+  shell: terraform init
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"
+
+- name: "Terraform plan"
+  shell: terraform plan -var-file=vars.tfvars -out myplan
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"
+
+- name: "Terraform apply"
+  shell: terraform apply myplan
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"
+
+- name: "Clean up plan"
+  file:
+    path: "{{playbook_dir}}/../{{cluster.type}}/myplan"
+    state: absent
+
+- name: "Retrieve kubeconfig"
+  shell: gcloud container clusters get-credentials cybertruck-cluster --zone europe-north1 --project cybertruck

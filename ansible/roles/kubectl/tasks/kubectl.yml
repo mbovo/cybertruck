@@ -1,0 +1,5 @@
+---
+
+- name: "{{ action.name }}"
+  shell: "kubectl {{item}}"
+  with_items: "{{ action.cmds }}"

@@ -1,0 +1,29 @@
+---
+
+- hosts: all
+  vars: {}
+  become: false
+  gather_facts: false
+  tasks:
+    # include configuration here
+
+    - name: "Load Configuration"
+      include_vars: "{{ configFile }}"
+      tags:
+        - always
+    - name: "Debug cluster section"
+      debug:
+        msg: "{{cluster}}"
+      tags:
+        - always
+
+    - name: "Debug kubernetes section"
+      debug:
+        msg: "{{kubernetes}}"
+      tags:
+        - always
+
+    - name: "Load current stage"
+      include_tasks: "playbooks/{{stage}}.yml"
+      tags:
+        - always

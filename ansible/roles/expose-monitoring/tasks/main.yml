@@ -1,0 +1,25 @@
+- name: Templating acme issuer
+  template:
+    src: acme-issuer.yml
+    dest: /tmp/acme-issuer.yml
+  ignore_errors: Yes
+  tags:
+    - resources
+
+- name: "Apply acme issuer"
+  shell: "kubectl apply -f /tmp/acme-issuer.yml"
+  ignore_errors: Yes
+  tags:
+    - resources
+
+- name: Templating ingress resource
+  template:
+    src: monitoring.ingress.yml
+    dest: /tmp/monitoring.ingress.yml
+  tags:
+    - resources
+
+- name: "Apply Ingress for prometheus and grafana"
+  shell: "kubectl apply -f /tmp/monitoring.ingress.yml"
+  tags:
+    - resources

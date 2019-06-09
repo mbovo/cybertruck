@@ -1,0 +1,12 @@
+---
+
+- name: "Templating shell script for proxy"
+  template:
+    src: kind-proxy.sh.tpl
+    dest: /tmp/kind-proxy.sh
+    mode: a+rwx
+  when: cluster.type == 'kind'
+
+- name: "Start kind-proxy for ingress"
+  shell: /tmp/kind-proxy.sh
+  when: cluster.type == 'kind'

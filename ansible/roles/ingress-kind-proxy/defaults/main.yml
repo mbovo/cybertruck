@@ -1,0 +1,4 @@
+---
+# defaults file for ingress-controller
+# sane default to avoid run-time errors key-not-found
+currentAddon.vars: {}

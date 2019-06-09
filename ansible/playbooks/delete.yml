@@ -1,0 +1,6 @@
+---
+
+- name: "Going to delete {{cluster.type}}"
+  include_tasks: "{{playbook_dir}}/../{{cluster.type}}/teardown.yml"
+  tags:
+    - always

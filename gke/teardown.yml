@@ -1,0 +1,12 @@
+
+
+- name: "Apply configuration"
+  template:
+    src: "{{playbook_dir}}/../{{cluster.type}}/vars.tfvars.j2"
+    dest: "{{playbook_dir}}/../{{cluster.type}}/vars.tfvars"
+
+
+- name: "Terraform destroy"
+  shell: terraform destroy -auto-approve -var-file=vars.tfvars
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"

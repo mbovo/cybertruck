@@ -1,0 +1,7 @@
+
+
+- name: "Iterate actions"
+  include_tasks: "kubectl.yml"
+  loop: "{{ kubernetes.kubectl_raw | default([]) }}"
+  loop_control:
+    loop_var: "action"

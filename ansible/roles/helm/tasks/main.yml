@@ -1,0 +1,7 @@
+---
+- name: "Iterate all charts"
+  include_tasks: "helm.yml"
+  loop: "{{ kubernetes.helm | default([]) }}"
+  loop_control:
+    loop_var: "currentChart"
+    

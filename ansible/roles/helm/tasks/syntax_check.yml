@@ -1,0 +1,22 @@
+---
+
+
+- fail:
+    msg: "each helm chart must have a 'releaseName' field as string not empty"
+  when: "'releaseName' not in currentChart or currentChart.releaseName is not string or currentChart.releaseName == '' "
+
+- fail:
+    msg: "{{currentChart.releaseName}} helm chart must have a 'namespace' field as string not empty"
+  when: "'namespace' not in currentChart or currentChart.namespace is not string or currentChart.namespace == '' "
+
+- fail:
+    msg: "{{currentChart.releaseName}} helm chart must have a 'chart' field as string not empty"
+  when: "'chart' not in currentChart or currentChart.chart is not string or currentChart.chart == '' "
+
+- fail:
+    msg: "{{currentChart.releaseName}} helm chart must have a 'version' field as string not empty"
+  when: "'version' not in currentChart or currentChart.version is not string or currentChart.version == '' "
+
+- fail:
+    msg: "{{currentChart.releaseName}} helm chart must have a 'customValues' field as map not empty"
+  when: "'customValues' not in currentChart or not ( currentChart.customValues is string or currentChart.customValues is mapping )"

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ ns.name }}
+{%if 'annotations' in ns and ns.annotations|length > 0 %}
+  annotations:
+{%for k,v in ns.annotations.items() %}
+    {{k}}: "{{v}}"
+{% endfor %}
+{% endif %}
+{% if 'labels' in ns and ns.labels|length > 0 %}
+  labels:
+{%for k,v in ns.labels.items() %}
+    {{k}}: "{{v}}"
+{% endfor %}
+{% endif %}
+
+{% if 'limits' in ns and ns.limits|length > 0%}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ns.name}}-limits
+  namespace: {{ns.name}}
+spec:
+  limits:
+  - {{ ns.limits | to_nice_yaml | indent(4)}}
+{% endif %}
+{% if 'quotas' in ns %}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ns.name}}-quota
+  namespace: {{ns.name}}
+spec:
+  {{ ns.quotas | to_nice_yaml }}
+{% endif %}

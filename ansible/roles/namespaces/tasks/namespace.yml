@@ -1,0 +1,17 @@
+---
+
+- name: "Templating resources"
+  template:
+    src: "namespace.yml"
+    dest: "/tmp/namespace_{{ns.name}}.yml"
+
+- name: "Validate resources"
+  shell: kubectl apply -f /tmp/namespace_{{ns.name}}.yml --dry-run  
+
+- name: "Apply resources"
+  shell: kubectl apply -f /tmp/namespace_{{ns.name}}.yml
+
+- name: "Cleanup"
+  file:
+    path: /tmp/namespace_{{ns.name}}.yml
+    state: absent

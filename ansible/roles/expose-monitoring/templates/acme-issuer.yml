@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  annotations:
+  name: letsencrypt-prod
+  namespace: {{currentAddon.namespace}}
+spec:
+  acme:
+    email: manuel.bovo@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

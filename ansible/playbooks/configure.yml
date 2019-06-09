@@ -1,0 +1,27 @@
+---
+
+- import_role:
+    name: "namespaces"
+  tags:
+    - namespace
+    - ns
+
+- import_role:
+    name: helm
+  tags:
+    - helm
+    - charts
+
+- import_role:
+    name: kubectl
+  tags:
+    - raw
+    - kubectl
+
+- include_role:
+    name: "{{ currentAddon.role }}"
+  loop: "{{ kubernetes.addons }}"
+  loop_control:
+    loop_var: currentAddon
+  tags:
+    - addons

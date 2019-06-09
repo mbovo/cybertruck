@@ -1,0 +1,11 @@
+#!/bin/bash
+
+- name: "Writing down kind config file"
+  template: 
+    src: "{{playbook_dir}}/../{{cluster.type}}/kind-config.yml.j2"
+    dest: /tmp/kind-config.yml
+
+- name: "Create cluster"
+  shell: kind create cluster --config /tmp/kind-config.yml --name {{ cluster.name }}
+  args:
+    chdir: "{{playbook_dir}}/../{{cluster.type}}/"

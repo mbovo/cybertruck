@@ -1,0 +1,8 @@
+---
+
+- name: "Iterate all namespaces"
+  include_tasks: "namespace.yml"
+  loop: "{{ kubernetes.namespaces }}"
+  loop_control:
+    loop_var: "ns"
+    
