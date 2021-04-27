@@ -16,7 +16,7 @@ cluster:
 
 ## Otherwise use Kubernetes in Docker KinD
   type: kind
-  name: "mycluster"
+  name: "cluster1"
   config:
     kind: Cluster
     apiVersion: kind.x-k8s.io/v1alpha4
@@ -32,7 +32,7 @@ cluster:
 
 kubernetes:
   globals:
-    domain_name: local.dev
+    domain_name: cluster1.dev
   namespaces: 
     - name: ingress
     # - name: test
@@ -58,14 +58,14 @@ kubernetes:
     #       limits.memory: "2Gi"
     #       pods: "20"
     - name: cert-manager
-    - name: monitoring
-    - name: cicd
+#    - name: monitoring
+#    - name: cicd
   helm:
     - releaseName: ingress
       namespace: ingress
-      repo: https://kubernetes-charts.storage.googleapis.com
+      repo: https://helm.nginx.com/stable
       chart: nginx-ingress
-      version: "1.34.2"
+      version: "0.9.1"
       customValues: # can be a string filename ora k/v map like this, if nothing to pass add it as empty map: {}
         controller:
           service:
@@ -108,7 +108,7 @@ kubernetes:
       namespace: ingress
       vars:
         releaseName: ingress
-        # publishAddr: "10.10.10.50"
+#        publishAddr: "192.168.0.55"
     # - role: certmanager
     #   namespace: cert-manager
     #   vars: {}
